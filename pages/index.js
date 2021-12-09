@@ -1,24 +1,53 @@
-import useSwr from 'swr'
-import Image from 'next/image'
-import receipt from '../public/262837841_894706987859516_8067427122901118575_n.jpg'
+import {useState} from "react";
 
-
-const fetcher = (url) => fetch(url).then((res) => res.json())
 
 export default function Index() {
-    const {data, error} = useSwr('/api/receipt', fetcher)
+    const [image, setImage] = useState(null);
+    const [data, setData] = useState(null);
+    const [createObjectURL, setCreateObjectURL] = useState(null);
+
+    const uploadToClient = (event) => {
+        if (event.target.files && event.target.files[0]) {
+            const i = event.target.files[0];
+
+            setImage(i);
+            setCreateObjectURL(URL.createObjectURL(i));
+        }
+    };
+
+    const uploadToServer = async (event) => {
+        const body = new FormData();
+        body.append("file", image);
+        const response = await fetch("/api/file", {
+            method: "POST",
+            body
+        });
+
+        const res = await fetch("/api/receipt");
+        const data = await res.json();
+        setData(data);
+    };
 
     return (
         <>
-            <h2>{data?.total ?? "Loading..."}</h2>
+            <h2>{data?.total}</h2>
+
+            <div>
+                <input type="file" name="myImage" onChange={uploadToClient}/>
+                <button
+                    className="btn btn-primary"
+                    type="submit"
+                    onClick={uploadToServer}
+                >
+                    Send to server
+                </button>
+            </div>
 
             <div style={{display: 'flex'}}>
-                <Image
-                    src={receipt}
-                    alt="Picture of the author"
-                    height={600}
+                <img src={createObjectURL}
+                     height={600}
                 />
-                <div style={{whiteSpace: 'pre-wrap'}}>{data?.text ?? "Loading..."}</div>
+                <div style={{whiteSpace: 'pre-wrap'}}>{data?.text}</div>
             </div>
         </>
     )

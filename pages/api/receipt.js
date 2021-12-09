@@ -25,9 +25,6 @@ const mockText = 'L1ISBOA ]\n' +
 function extractTotal(s) {
     let regex = /[0-9],[0-9][0-9]€/g;
     const found = s.match(regex);
-
-    regex = /^(0|(([1-9]{1}|[1-9]{1}[0-9]{1}|[1-9]{1}[0-9]{2}){1}(\ [0-9]{3}){0,})),(([0-9]{2})|\-\-)([\ ]{1})(€|EUR|EURO){1}$/g;
-    console.log(found);
     if (found && found.length) {
         return found[0];
     } else {
@@ -36,12 +33,11 @@ function extractTotal(s) {
 }
 
 export default async function handler(req, res) {
-    // res.status(200).end();
     try {
         await worker.load();
         await worker.loadLanguage('por');
         await worker.initialize('por');
-        const {data: {text}} = await worker.recognize('http://localhost:3000/262837841_894706987859516_8067427122901118575_n.jpg');
+        const {data: {text}} = await worker.recognize('http://localhost:3000/freshly_uploaded');
         res.status(200).json({
             total: extractTotal(text),
             text: text
