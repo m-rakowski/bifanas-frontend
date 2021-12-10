@@ -16,6 +16,7 @@
     "swr": "^1.1.0"
   },
   "devDependencies": {
+    "@types/react": "^17.0.37",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.0",
     "tesseract.js": "^2.1.5"

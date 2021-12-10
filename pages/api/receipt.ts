@@ -1,4 +1,5 @@
 import {createWorker} from 'tesseract.js';
+import {NextApiRequest, NextApiResponse} from "next";
 
 const worker = createWorker({
     logger: m => console.log(m)
@@ -32,7 +33,7 @@ function extractTotal(s) {
     }
 }
 
-export default async function handler(req, res) {
+export default async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         await worker.load();
         await worker.loadLanguage('por');

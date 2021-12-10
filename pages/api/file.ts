@@ -1,5 +1,6 @@
 import formidable from "formidable";
 import fs from "fs";
+import { NextApiRequest, NextApiResponse } from 'next'
 
 export const config = {
     api: {
@@ -24,10 +25,10 @@ const saveFile = async (file) => {
     return;
 };
 
-export default async function handler(req, res) {
+export default (req: NextApiRequest, res: NextApiResponse) => {
     try {
         return post(req, res)
     } catch (err) {
         res.status(404).send("")
     }
-};
+}
