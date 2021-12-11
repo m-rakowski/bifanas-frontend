@@ -22,8 +22,16 @@ export default function Index() {
             method: "POST",
             body
         });
+        const { secure_url } = await response.json();
 
-        const res = await fetch("/api/receipt");
+        await getParsedData(secure_url);
+    };
+
+    const getParsedData = async (secure_url: string) => {
+        const res = await fetch("/api/receipt", {
+            body: JSON.stringify({secure_url}),
+            method: "POST"
+        });
         const data = await res.json();
         setData(data);
     };
@@ -36,7 +44,7 @@ export default function Index() {
                 <input type="file" name="myImage" onChange={uploadToClient}/>
                 <button
                     className="btn btn-primary"
-                    type="submit"
+                    type="button"
                     onClick={uploadToServer}
                 >
                     Send to server

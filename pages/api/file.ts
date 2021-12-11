@@ -1,6 +1,7 @@
 import formidable from "formidable";
 import fs from "fs";
-import { NextApiRequest, NextApiResponse } from 'next'
+import {NextApiRequest, NextApiResponse} from 'next'
+import {v2} from "cloudinary";
 
 export const config = {
     api: {
@@ -8,27 +9,37 @@ export const config = {
     }
 };
 
-const post = async (req, res) => {
-    const form = new formidable.IncomingForm();
-    form.parse(req, async function (err, fields, files) {
-        await saveFile(files.file);
-        return res.status(201).send("");
-    });
-};
-
-const saveFile = async (file) => {
-    const projectPath = __dirname.replace('\\.next\\server\\pages\\api', '');
-
+const saveFileInProject = async (file) => {
     const data = fs.readFileSync(file.filepath);
-    fs.writeFileSync(projectPath + `/public/freshly_uploaded`, data);
+    fs.writeFileSync('freshly_updated', data);
     await fs.unlinkSync(file.filepath);
-    return;
+    console.log('saveFileInProject, saved', file.originalFilename);
 };
 
-export default (req: NextApiRequest, res: NextApiResponse) => {
+const uploadToCloudinary = async (file) => {
+    const res = await v2.uploader.upload("freshly_updated");
+    console.log('uploadToCloudinary, uploaded', res.secure_url);
+    return res.secure_url;
+};
+
+function formidablePromise(req, opts): Promise<{ fields: any, files: any }> {
+    return new Promise(function (resolve, reject) {
+        const form = new formidable.IncomingForm(opts)
+        form.parse(req, function (err, fields, files) {
+            if (err) return reject(err)
+            resolve({fields: fields, files: files})
+        })
+    })
+}
+
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+
     try {
-        return post(req, res)
+        const {files} = await formidablePromise(req, {});
+        await saveFileInProject(files.file);
+        const secure_url = await uploadToCloudinary(files.file);
+        res.status(201).send({secure_url});
     } catch (err) {
-        res.status(404).send("")
+        res.status(500).send(err);
     }
 }

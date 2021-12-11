@@ -38,7 +38,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         await worker.load();
         await worker.loadLanguage('por');
         await worker.initialize('por');
-        const {data: {text}} = await worker.recognize('http://localhost:3000/freshly_uploaded');
+
+        const body = JSON.parse(req.body)
+
+        const {data: {text}} = await worker.recognize(body.secure_url);
         res.status(200).json({
             total: extractTotal(text),
             text: text
