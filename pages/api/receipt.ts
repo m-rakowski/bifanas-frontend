@@ -41,7 +41,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
         const body = JSON.parse(req.body)
 
-        const {data: {text}} = await worker.recognize(body.secure_url);
+        if(!body || !body.secure_url) {
+            res.status(500).send("No secure_url provided");
+        }
+
+            const {data: {text}} = await worker.recognize(body.secure_url);
         res.status(200).json({
             total: extractTotal(text),
             text: text

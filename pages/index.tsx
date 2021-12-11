@@ -4,6 +4,7 @@ import {useState} from "react";
 export default function Index() {
     const [image, setImage] = useState(null);
     const [data, setData] = useState(null);
+    const [secureUrl, setSecureUrl] = useState(null);
     const [createObjectURL, setCreateObjectURL] = useState(null);
 
     const uploadToClient = (event) => {
@@ -22,9 +23,13 @@ export default function Index() {
             method: "POST",
             body
         });
-        const { secure_url } = await response.json();
+        const {secure_url} = await response.json();
 
-        await getParsedData(secure_url);
+        setSecureUrl(secure_url);
+    };
+
+    const getOCR = async () => {
+        await getParsedData(secureUrl);
     };
 
     const getParsedData = async (secure_url: string) => {
@@ -49,8 +54,16 @@ export default function Index() {
                 >
                     Send to server
                 </button>
+                <button
+                    className="btn btn-primary"
+                    type="button"
+                    onClick={getOCR}
+                >
+                    Get OCR
+                </button>
             </div>
 
+            <h3>{secureUrl}</h3>
             <div style={{display: 'flex'}}>
                 <img src={createObjectURL}
                      height={600}
