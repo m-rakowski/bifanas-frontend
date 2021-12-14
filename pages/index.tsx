@@ -1,4 +1,5 @@
 import {useState} from "react";
+import {useUser} from '@auth0/nextjs-auth0';
 
 
 export default function Index() {
@@ -6,6 +7,7 @@ export default function Index() {
     const [data, setData] = useState(null);
     const [secureUrl, setSecureUrl] = useState(null);
     const [createObjectURL, setCreateObjectURL] = useState(null);
+    const {user, error, isLoading} = useUser();
 
     const uploadToClient = (event) => {
         if (event.target.files && event.target.files[0]) {
@@ -43,6 +45,11 @@ export default function Index() {
 
     return (
         <>
+            {user
+                ? <div>Welcome {user.name}! <a href="/api/auth/logout">Logout</a></div>
+                : <a href="/api/auth/login">Login</a>
+            }
+
             <h2>{data?.total}</h2>
 
             <div>

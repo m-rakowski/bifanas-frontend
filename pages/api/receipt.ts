@@ -1,5 +1,6 @@
 import {createWorker} from 'tesseract.js';
 import {NextApiRequest, NextApiResponse} from "next";
+import {withApiAuthRequired} from '@auth0/nextjs-auth0';
 
 const worker = createWorker({
     logger: m => console.log(m)
@@ -33,25 +34,27 @@ function extractTotal(s) {
     }
 }
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
-    try {
-        await worker.load();
-        await worker.loadLanguage('por');
-        await worker.initialize('por');
+export default withApiAuthRequired(
+    async (req: NextApiRequest, res: NextApiResponse) => {
+        try {
+            await worker.load();
+            await worker.loadLanguage('por');
+            await worker.initialize('por');
 
-        const body = JSON.parse(req.body)
+            const body = JSON.parse(req.body)
 
-        if(!body || !body.secure_url) {
-            res.status(500).send("No secure_url provided");
-        }
+            if (!body || !body.secure_url) {
+                res.status(500).send("No secure_url provided");
+            }
 
             const {data: {text}} = await worker.recognize(body.secure_url);
-        res.status(200).json({
-            total: extractTotal(text),
-            text: text
-        });
-        await worker.terminate();
-    } catch (err) {
-        res.status(500).send(err)
+            res.status(200).json({
+                total: extractTotal(text),
+                text: text
+            });
+            await worker.terminate();
+        } catch (err) {
+            res.status(500).send(err)
+        }
     }
-}
+)

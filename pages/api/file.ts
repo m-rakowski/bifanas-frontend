@@ -2,6 +2,7 @@ import formidable from "formidable";
 import fs from "fs";
 import {NextApiRequest, NextApiResponse} from 'next'
 import {v2} from "cloudinary";
+import {withApiAuthRequired} from "@auth0/nextjs-auth0";
 
 export const config = {
     api: {
@@ -32,14 +33,16 @@ function formidablePromise(req, opts): Promise<{ fields: any, files: any }> {
     })
 }
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default withApiAuthRequired(
+    async (req: NextApiRequest, res: NextApiResponse) => {
 
-    try {
-        const {files} = await formidablePromise(req, {});
-        await saveFileInProject(files.file);
-        const secure_url = await uploadToCloudinary(files.file);
-        res.status(201).send({secure_url});
-    } catch (err) {
-        res.status(500).send(err);
+        try {
+            const {files} = await formidablePromise(req, {});
+            await saveFileInProject(files.file);
+            const secure_url = await uploadToCloudinary(files.file);
+            res.status(201).send({secure_url});
+        } catch (err) {
+            res.status(500).send(err);
+        }
     }
-}
+)
