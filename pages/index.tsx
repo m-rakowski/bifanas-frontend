@@ -45,38 +45,42 @@ export default function Index() {
 
     return (
         <>
-            {user
-                ? <div>Welcome {user.name}! <a href="/api/auth/logout">Logout</a></div>
-                : <a href="/api/auth/login">Login</a>
-            }
+            <nav>
+                {user
+                    ? <div>Welcome {user.name}! <a href="/api/auth/logout">Logout</a></div>
+                    : <a href="/api/auth/login">Login</a>
+                }
+            </nav>
+            {user && <div>
 
-            <h2>{data?.total}</h2>
+                <h2>{data?.total}</h2>
 
-            <div>
-                <input type="file" name="myImage" onChange={uploadToClient}/>
-                <button
-                    className="btn btn-primary"
-                    type="button"
-                    onClick={uploadToServer}
-                >
-                    Send to server
-                </button>
-                <button
-                    className="btn btn-primary"
-                    type="button"
-                    onClick={getOCR}
-                >
-                    Get OCR
-                </button>
-            </div>
+                <div>
+                    <input type="file" name="myImage" onChange={uploadToClient}/>
+                    <button
+                        className="btn btn-primary"
+                        type="button"
+                        onClick={uploadToServer}
+                    >
+                        Send to server
+                    </button>
+                    <button
+                        className="btn btn-primary"
+                        type="button"
+                        onClick={getOCR}
+                    >
+                        Get OCR
+                    </button>
+                </div>
 
-            <h3>{secureUrl}</h3>
-            <div style={{display: 'flex'}}>
-                <img src={createObjectURL}
-                     height={600}
-                />
-                <div style={{whiteSpace: 'pre-wrap'}}>{data?.text}</div>
-            </div>
+                <h3>{secureUrl}</h3>
+                <div style={{display: 'flex'}}>
+                    <img src={createObjectURL}
+                         height={600}
+                    />
+                    <div style={{whiteSpace: 'pre-wrap'}}>{data?.text}</div>
+                </div>
+            </div>}
         </>
     )
 }
