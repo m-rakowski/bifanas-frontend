@@ -1,5 +1,7 @@
 import {useState} from "react";
 import {useUser} from '@auth0/nextjs-auth0';
+import Image from 'next/image';
+import Link from 'next/link';
 
 
 export default function Index() {
@@ -47,8 +49,8 @@ export default function Index() {
         <>
             <nav>
                 {user
-                    ? <div>Welcome {user.name}! <a href="/api/auth/logout">Logout</a></div>
-                    : <a href="/api/auth/login">Login</a>
+                    ? <div>Welcome {user.name}! <Link href="/api/auth/logout"><a>Logout</a></Link></div>
+                    : <Link href="/api/auth/login"><a>Login</a></Link>
                 }
             </nav>
             {user && <div>
@@ -73,13 +75,12 @@ export default function Index() {
                     </button>
                 </div>
 
-                <h3>{secureUrl}</h3>
-                <div style={{display: 'flex'}}>
-                    <img src={createObjectURL}
-                         height={600}
-                    />
-                    <div style={{whiteSpace: 'pre-wrap'}}>{data?.text}</div>
-                </div>
+                {createObjectURL && <Image src={createObjectURL}
+                                           alt={'uploaded image'}
+                                           width={500}
+                                           height={600}
+                />}
+                <div style={{whiteSpace: 'pre-wrap'}}>{data?.text}</div>
             </div>}
         </>
     )
