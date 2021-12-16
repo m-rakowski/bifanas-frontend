@@ -38,11 +38,12 @@ export default withApiAuthRequired(
 
         try {
             const {files} = await formidablePromise(req, {});
+
             await saveFileInProject(files.file);
             const secure_url = await uploadToCloudinary(files.file);
             res.status(201).send({secure_url});
-        } catch (err) {
-            res.status(500).send(err);
+        } catch (error) {
+            res.status(400).json(error);
         }
     }
 )

@@ -1,5 +1,9 @@
-import React from 'react';
 import {UserProvider} from '@auth0/nextjs-auth0';
+import {ChakraProvider, Container} from '@chakra-ui/react';
+import '../styles/globals.scss';
+import '../theme/styles.scss';
+import theme from '../theme';
+import Nav from "./components/nav";
 
 export default function App({Component, pageProps}) {
     // If you've used `withAuth`, pageProps.user can pre-populate the hook
@@ -9,7 +13,21 @@ export default function App({Component, pageProps}) {
 
     return (
         <UserProvider user={user}>
-            <Component {...pageProps} />
+            <ChakraProvider theme={theme}>
+                <header>
+                    <Nav/>
+                </header>
+                <Container maxW="container.xl"
+                           px={[5, 10, 20]}
+                           py={[10, 20, 30]}
+                           h={{
+                               base: 'auto',
+                               md: '100vh',
+                           }}>
+                    <Component {...pageProps} />
+                </Container>
+            </ChakraProvider>
         </UserProvider>
     );
 }
+

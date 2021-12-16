@@ -53,8 +53,8 @@ export default withApiAuthRequired(
                 text: text
             });
             await worker.terminate();
-        } catch (err) {
-            res.status(500).send(err)
+        } catch (error) {
+            res.status(500).send({error});
         }
     }
 )
