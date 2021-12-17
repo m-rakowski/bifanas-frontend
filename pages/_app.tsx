@@ -14,9 +14,7 @@ export default function App({Component, pageProps}) {
     return (
         <UserProvider user={user}>
             <ChakraProvider theme={theme}>
-                <header>
-                    <Nav/>
-                </header>
+                <Nav/>
                 <Container maxW="container.xl"
                            px={[5, 10, 20]}
                            py={[10, 20, 30]}

@@ -37,10 +37,6 @@ export default withApiAuthRequired(
     async (req: NextApiRequest, res: NextApiResponse) => {
         try {
 
-            if (!req.body) {
-                return res.status(422).json({error: "No file provided"})
-            }
-
             const {files} = await formidablePromise(req, {});
 
             await saveFileInProject(files.file);

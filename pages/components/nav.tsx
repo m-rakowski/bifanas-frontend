@@ -11,6 +11,7 @@ import {
     MenuItem,
     MenuList,
     Stack,
+    Text,
     useColorModeValue,
     useDisclosure,
 } from '@chakra-ui/react';
@@ -86,6 +87,7 @@ export default function Nav() {
                         </HStack>
                     </HStack>
                     <Flex alignItems={'center'}>
+                        {!user && <Button onClick={() => router.push('/api/auth/login')}>Sign in</Button>}
                         <Menu>
                             <MenuButton
                                 as={Button}
@@ -93,11 +95,10 @@ export default function Nav() {
                                 variant={'link'}
                                 cursor={'pointer'}
                                 minW={0}>
-                                {!user && <div>Sign in</div> }
-                                <Avatar
+                                {user && <Avatar
                                     size={'sm'}
                                     src={user?.picture}
-                                />
+                                />}
                             </MenuButton>
                             <MenuList>
                                 {!user && <MenuItem onClick={() => router.push('/api/auth/login')}>Sign in</MenuItem>}

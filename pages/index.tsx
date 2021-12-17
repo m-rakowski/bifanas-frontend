@@ -2,7 +2,7 @@ import {useState} from "react";
 import {useUser} from '@auth0/nextjs-auth0';
 import Image from 'next/image';
 import '../styles/Index.module.scss'
-import {Button, Heading, HStack, Spinner, useToast} from "@chakra-ui/react";
+import {Box, Button, Center, Flex, Heading, HStack, Spinner, Text, useToast} from "@chakra-ui/react";
 import Dropzone from "./components/dropzone";
 import axios from "axios";
 
@@ -14,28 +14,36 @@ export default function Index() {
     const [createObjectURL, setCreateObjectURL] = useState(null);
     const toast = useToast()
 
-    const uploadToClient = (image) => {
+    const uploadToClient = async (image) => {
         console.log(image.abc);
         if (image) {
             setImage(image);
             setCreateObjectURL(URL.createObjectURL(image));
+            const secure_url = await uploadToServer(image);
+            await getOCR(secure_url);
         }
     };
 
-    const uploadToServer = async (event) => {
+    const uploadToServer = async (image) => {
         try {
             setRequestInProgress(true);
-            const body = new FormData();
-            body.append("file", image);
-            const secure_url = await axios.post("/api/file", {
-                body
-            });
-
+            const formData = new FormData();
+            formData.append("file", image);
+            const response = await axios.post(
+                "/api/file",
+                formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+            setSecureUrl(response.data.secure_url)
             toast({
-                title: `File upload`,
+                title: `File uploaded`,
                 status: 'success',
                 isClosable: true,
             });
+            return response.data.secure_url;
+
         } catch (err) {
             toast({
                 title: `${JSON.stringify(err)}`,
@@ -47,17 +55,16 @@ export default function Index() {
         }
     };
 
-    const getOCR = async () => {
+    const getOCR = async (secure_url) => {
         try {
             setRequestInProgress(true);
-            const data = await axios.post(
-                "/api/receipt",
-                {secure_url: secureUrl}
+            const res = await axios.post("/api/receipt",
+                {secure_url},
             );
-            setData(data);
+            setData(res.data);
 
             toast({
-                title: `OCR`,
+                title: `Scanning for text`,
                 status: 'success',
                 isClosable: true,
             });
@@ -86,22 +93,32 @@ export default function Index() {
                 />}
                 <Heading as='h3' size='lg'>Amount: {data?.total}</Heading>
                 <Dropzone onFileAccepted={uploadToClient}/>
-                <HStack spacing='24px'>
-                    <Button colorScheme='teal' variant='link'
-                            type="button"
-                            onClick={uploadToServer}
-                    >Send to server</Button>
-                    <Button colorScheme='teal' variant='link'
-                            type="button"
-                            onClick={getOCR}
-                    >Get OCR</Button>
-                </HStack>
-                {createObjectURL && <Image src={createObjectURL}
-                                           alt={'uploaded image'}
-                                           width={500}
-                                           height={600}
-                />}
-                <div style={{whiteSpace: 'pre-wrap'}}>{data?.text}</div>
+
+                <Center>
+                    <Box p={4} display={{md: 'flex'}}>
+                        <Box flexShrink={0}>
+                            {createObjectURL && <Image src={createObjectURL}
+                                                       alt={'uploaded image'}
+                                                       width={400}
+                                                       height={800}
+                            />}
+                        </Box>
+                        <Box mt={{base: 4, md: 0}} ml={{md: 6}}>
+                            {data?.text && <Text
+                                fontWeight='bold'
+                                textTransform='uppercase'
+                                fontSize='sm'
+                                letterSpacing='wide'
+                                color='teal.600'
+                            >Parsed text</Text>}
+
+                            <Text mt={2} color='gray.500' style={{whiteSpace: 'pre-wrap'}}>
+                                {data?.text}
+                            </Text>
+                        </Box>
+                    </Box>
+                </Center>
+
             </div>}
         </>
     )
