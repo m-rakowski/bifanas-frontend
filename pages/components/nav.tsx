@@ -93,6 +93,7 @@ export default function Nav() {
                                 variant={'link'}
                                 cursor={'pointer'}
                                 minW={0}>
+                                {!user && <div>Sign in</div> }
                                 <Avatar
                                     size={'sm'}
                                     src={user?.picture}
