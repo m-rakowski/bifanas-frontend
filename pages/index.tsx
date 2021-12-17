@@ -4,6 +4,7 @@ import Image from 'next/image';
 import '../styles/Index.module.scss'
 import {Button, Heading, HStack, Spinner, useToast} from "@chakra-ui/react";
 import Dropzone from "./components/dropzone";
+import axios from "axios";
 
 export default function Index() {
     const [requestInProgress, setRequestInProgress] = useState<boolean>(false);
@@ -26,12 +27,15 @@ export default function Index() {
             setRequestInProgress(true);
             const body = new FormData();
             body.append("file", image);
-            const response = await fetch("/api/file", {
-                method: "POST",
+            const secure_url = await axios.post("/api/file", {
                 body
             });
-            const {secure_url} = await response.json();
-            setSecureUrl(secure_url);
+
+            toast({
+                title: `File upload`,
+                status: 'success',
+                isClosable: true,
+            });
         } catch (err) {
             toast({
                 title: `${JSON.stringify(err)}`,
@@ -46,7 +50,17 @@ export default function Index() {
     const getOCR = async () => {
         try {
             setRequestInProgress(true);
-            await getParsedData(secureUrl);
+            const data = await axios.post(
+                "/api/receipt",
+                {secure_url: secureUrl}
+            );
+            setData(data);
+
+            toast({
+                title: `OCR`,
+                status: 'success',
+                isClosable: true,
+            });
         } catch (err) {
             toast({
                 title: `${JSON.stringify(err)}`,
@@ -58,14 +72,6 @@ export default function Index() {
         }
     };
 
-    const getParsedData = async (secure_url: string) => {
-        const res = await fetch("/api/receipt", {
-            body: JSON.stringify({secure_url}),
-            method: "POST"
-        });
-        const data = await res.json();
-        setData(data);
-    };
     const {user, error, isLoading} = useUser();
 
     return (
