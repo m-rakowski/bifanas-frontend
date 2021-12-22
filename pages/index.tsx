@@ -6,10 +6,14 @@ import {Box, Button, Center, Flex, Heading, HStack, Spinner, Text, useToast} fro
 import Dropzone from "./components/dropzone";
 import axios from "axios";
 
+export interface OcrResponse {
+    text: string;
+    total: string;
+}
 export default function Index() {
     const [requestInProgress, setRequestInProgress] = useState<boolean>(false);
     const [image, setImage] = useState(null);
-    const [data, setData] = useState(null);
+    const [data, setData] = useState<OcrResponse>(null);
     const [secureUrl, setSecureUrl] = useState(null);
     const [createObjectURL, setCreateObjectURL] = useState(null);
     const toast = useToast()
@@ -19,9 +23,9 @@ export default function Index() {
         if (image) {
             setImage(image);
             setCreateObjectURL(URL.createObjectURL(image));
-            const secure_url = await uploadToServer(image);
-            await getOCR(secure_url);
         }
+
+        setData(await uploadStraightToOCRServer(image));
     };
 
     const uploadToServer = async (image) => {
@@ -54,7 +58,36 @@ export default function Index() {
             setRequestInProgress(false);
         }
     };
+    const uploadStraightToOCRServer = async (image) => {
+        try {
+            setRequestInProgress(true);
+            const formData = new FormData();
+            formData.append("file", image);
+            const response = await axios.post<OcrResponse>(
+                "http://localhost:8080/api/ocr/file",
+                formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+            toast({
+                title: `File uploaded`,
+                status: 'success',
+                isClosable: true,
+            });
 
+            return response.data;
+
+        } catch (err) {
+            toast({
+                title: `${JSON.stringify(err)}`,
+                status: 'error',
+                isClosable: true,
+            });
+        } finally {
+            setRequestInProgress(false);
+        }
+    };
     const getOCR = async (secure_url) => {
         try {
             setRequestInProgress(true);
