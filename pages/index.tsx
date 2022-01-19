@@ -108,7 +108,7 @@ export default function Index() {
                     {uploadedImage && data && data.savedName && <HStack>
                         <Heading as='h3' size='lg'>Amount:</Heading>
                         <NumberInput
-                            onChange={() => setInputValue(event.target?.value)}
+                            onChange={() => setInputValue((event.target as HTMLButtonElement)?.value)}
                             value={inputValue}
                             precision={2} step={0.1} width={'300px'}
                         >
