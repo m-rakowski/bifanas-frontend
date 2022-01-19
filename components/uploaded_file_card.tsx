@@ -1,5 +1,5 @@
-import {Box, Flex, Image, Tooltip, useColorModeValue,} from '@chakra-ui/react';
-import {DeleteIcon} from '@chakra-ui/icons';
+import React from "react";
+import {Box, chakra, Flex, Image, useColorModeValue} from "@chakra-ui/react";
 import {UploadedFile} from "../model/uploaded-file";
 
 const UploadedFileCard: React.FC<{
@@ -12,12 +12,27 @@ const UploadedFileCard: React.FC<{
           readonlyMode = false,
       }) => (
     <Box
-        bg={useColorModeValue('white', 'gray.800')}
-        borderWidth="1px"
-        rounded="lg"
+        maxW="xs"
+        mx="auto"
+        bg={useColorModeValue("white", "gray.800")}
         shadow="lg"
-        position={'relative'}
+        rounded="lg"
     >
+        <Box px={4} py={2}>
+            <chakra.h1
+                color={useColorModeValue("gray.800", "white")}
+                fontWeight="bold"
+                fontSize="3xl"
+                textTransform="uppercase"
+            >{uploadedFile.total}</chakra.h1>
+            <chakra.p
+                mt={1}
+                fontSize="sm"
+                style={{whiteSpace: 'pre-wrap'}}
+                color={useColorModeValue("gray.600", "gray.400")}
+            >{uploadedFile.text}</chakra.p>
+        </Box>
+
 
         <Image
             src={`/backend/${uploadedFile.url}`}
@@ -26,48 +41,38 @@ const UploadedFileCard: React.FC<{
             w={'100%'}
         />
 
-        <Box p="6">
-            <Flex mt="1" justifyContent="space-between" alignContent="center">
-                <Box
-                    fontSize="2xl"
-                    fontWeight="semibold"
-                    as="h4"
-                    lineHeight="tight"
-                    isTruncated>
-                    {uploadedFile.total}
-                </Box>
-                <Box
-                    fontSize="2xl"
-                    fontWeight="semibold"
-                    as="h4"
-                    lineHeight="tight"
-                    isTruncated>
-                    {uploadedFile.oldName}
-                </Box>
-                <Box
-                    fontSize="2s"
-                    fontWeight="semibold"
-                    as="h4"
-                    lineHeight="tight"
-                    isTruncated>
-                    {uploadedFile.text}
-                </Box>
+        <Flex
+            alignItems="center"
+            justifyContent="space-between"
+            px={4}
+            py={2}
+            bg="gray.900"
+            roundedBottom="lg"
+        >
+            <chakra.h1 color="white" fontWeight="bold" fontSize="lg">
+                {uploadedFile.total}
+            </chakra.h1>
+            <chakra.button
+                onClick={() => onDelete(uploadedFile.id)}
+                px={2}
+                py={1}
+                bg="white"
+                fontSize="xs"
+                color="gray.900"
+                fontWeight="bold"
+                rounded="lg"
+                textTransform="uppercase"
+                _hover={{
+                    bg: "gray.200",
+                }}
+                _focus={{
+                    bg: "gray.400",
+                }}
+            >
+                Delete
+            </chakra.button>
+        </Flex>
+    </Box>
+);
 
-                {!readonlyMode
-                && <Tooltip
-                    label="Delete"
-                    bg="white"
-                    placement={'top'}
-                    color={'gray.800'}
-                    fontSize={'1.2em'}>
-                    <Box display={'flex'}>
-                        <DeleteIcon
-                            alignSelf={'center'} h={5} w={5} onClick={() => onDelete(uploadedFile.id)}
-                            aria-label="Search database"
-                        />
-                    </Box>
-                </Tooltip>}
-            </Flex>
-        </Box>
-    </Box>);
 export default UploadedFileCard;

@@ -23,7 +23,6 @@ export default function Uploaded() {
         {
             uploadedList.map((uploadedFile: UploadedFile) => (
                 <Box key={uploadedFile.id}>
-                    {uploadedFile.oldName}
                     <UploadedFileCard
                         uploadedFile={uploadedFile}
                         onDelete={deleteUploadedFile}
