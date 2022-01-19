@@ -1,7 +1,6 @@
 import {Box, Flex, Image, Tooltip, useColorModeValue,} from '@chakra-ui/react';
-import React from 'react';
 import {DeleteIcon} from '@chakra-ui/icons';
-import {UploadedFile} from "../../model/uploaded-file";
+import {UploadedFile} from "../model/uploaded-file";
 
 const UploadedFileCard: React.FC<{
     uploadedFile: UploadedFile;

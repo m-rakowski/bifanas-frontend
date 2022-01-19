@@ -3,7 +3,7 @@ import {ChakraProvider, Container} from '@chakra-ui/react';
 import '../styles/globals.scss';
 import '../theme/styles.scss';
 import theme from '../theme';
-import Nav from "./components/nav";
+import Nav from "../components/nav";
 
 export default function App({Component, pageProps}) {
     // If you've used `withAuth`, pageProps.user can pre-populate the hook

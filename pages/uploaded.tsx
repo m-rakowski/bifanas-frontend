@@ -3,7 +3,7 @@ import '../styles/Uploaded.module.scss'
 import {UploadedFile} from "../model/uploaded-file";
 import axios from "axios";
 import {Box, SimpleGrid} from "@chakra-ui/react";
-import UploadedFileCard from "./components/uploaded_file_card";
+import UploadedFileCard from "../components/uploaded_file_card";
 
 export default function Uploaded() {
     const [uploadedList, setUploadedList] = useState<UploadedFile[]>([]);

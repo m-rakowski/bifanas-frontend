@@ -3,7 +3,7 @@ import {useUser} from '@auth0/nextjs-auth0';
 import Image from 'next/image';
 import '../styles/Index.module.scss'
 import {Box, Button, Center, Flex, Heading, HStack, Spinner, Text, useToast} from "@chakra-ui/react";
-import Dropzone from "./components/dropzone";
+import Dropzone from "../components/dropzone";
 import axios from "axios";
 
 export interface OcrResponse {
