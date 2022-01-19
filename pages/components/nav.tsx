@@ -11,7 +11,6 @@ import {
     MenuItem,
     MenuList,
     Stack,
-    Text,
     useColorModeValue,
     useDisclosure,
 } from '@chakra-ui/react';
@@ -27,13 +26,13 @@ interface LinkLabelPath {
 }
 
 const Links: LinkLabelPath [] = [
-    // {
-    //     label: 'Images',
-    //     path: 'images',
-    // },
     {
         label: 'Home',
         path: '/',
+    },
+    {
+        label: 'Uploaded',
+        path: '/uploaded',
     },
 ];
 

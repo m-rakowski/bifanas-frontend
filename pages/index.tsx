@@ -65,8 +65,8 @@ export default function Index() {
             formData.append("file", image);
 
             const response = await axios.post<OcrResponse>(
-                "https://bifanas-backend.herokuapp.com/api/image/fix-perspective",
-                // "http://localhost:8080/api/image/fix-perspective",
+                // "https://bifanas-backend.herokuapp.com/api/image/fix-perspective",
+                "http://localhost:8080/api/image/ocr",
                 formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
