@@ -21,7 +21,7 @@ const UploadedFileCard: React.FC<{
     >
 
         <Image
-            src={`http://localhost:8080/${uploadedFile.url}`}
+            src={`/backend/${uploadedFile.url}`}
             alt={`Picture of ${uploadedFile.oldName}`}
             roundedTop="lg"
             w={'100%'}

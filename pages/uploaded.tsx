@@ -9,14 +9,14 @@ export default function Uploaded() {
     const [uploadedList, setUploadedList] = useState<UploadedFile[]>([]);
 
     const deleteUploadedFile = (id: string) => {
-        axios.delete(`http://localhost:8000/images/${id}`)
+        axios.delete(`/backend/api/images/${id}`)
             .then(() => {
                 setUploadedList(uploadedList.filter((uploadedFile) => uploadedFile.id !== id));
             });
     };
     useEffect(() => {
         axios
-            .get<UploadedFile[]>('http://localhost:8080/api/images')
+            .get<UploadedFile[]>('/backend/api/images')
             .then((uploadedFiles) => setUploadedList(uploadedFiles.data));
     }, []);
     return (<SimpleGrid minChildWidth="240px" spacing="40px">
