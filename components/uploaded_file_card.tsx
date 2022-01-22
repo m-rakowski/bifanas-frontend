@@ -35,7 +35,7 @@ const UploadedFileCard: React.FC<{
 
 
         <Image
-            src={`/backend/${uploadedFile.fileId}`}
+            src={`/backend/${uploadedFile.id}`}
             alt={`Picture of ${uploadedFile.originalName}`}
             roundedTop="lg"
             w={'100%'}
