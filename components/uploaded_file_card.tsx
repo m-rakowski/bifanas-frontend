@@ -1,78 +1,106 @@
-import React from "react";
-import {Box, chakra, Flex, Image, useColorModeValue} from "@chakra-ui/react";
-import {UploadedFile} from "../model/uploaded-file";
+import React, {useState} from "react";
+import {
+    Box,
+    Button,
+    chakra,
+    Collapse,
+    Editable,
+    EditableInput,
+    EditablePreview,
+    Flex,
+    Image,
+    Text,
+    useColorModeValue
+} from "@chakra-ui/react";
+import {UploadedFileRM} from "../model/uploaded-file-r-m";
 
 const UploadedFileCard: React.FC<{
-    uploadedFile: UploadedFile;
+    uploadedFile: UploadedFileRM;
     onDelete?: (id: string) => void;
-    readonlyMode?: boolean
+    onUpdate?: (newTotal: string, savedFileName: string) => void;
 }> = ({
           uploadedFile,
           onDelete,
-          readonlyMode = false,
-      }) => (
-    <Box
-        maxW="xs"
-        mx="auto"
-        bg={useColorModeValue("white", "gray.800")}
-        shadow="lg"
-        rounded="lg"
-    >
-        <Box px={4} py={2}>
-            <chakra.h1
-                color={useColorModeValue("gray.800", "white")}
-                fontWeight="bold"
-                fontSize="3xl"
-                textTransform="uppercase"
-            >{uploadedFile.total}</chakra.h1>
-            <chakra.p
-                mt={1}
-                fontSize="sm"
-                style={{whiteSpace: 'pre-wrap'}}
-                color={useColorModeValue("gray.600", "gray.400")}
-            >{uploadedFile.text}</chakra.p>
-        </Box>
+          onUpdate,
+      }) => {
+    const [show, setShow] = useState(false);
 
-
-        <Image
-            src={`/backend/${uploadedFile.id}`}
-            alt={`Picture of ${uploadedFile.originalName}`}
-            roundedTop="lg"
-            w={'100%'}
-        />
-
-        <Flex
-            alignItems="center"
-            justifyContent="space-between"
-            px={4}
-            py={2}
-            bg="gray.900"
-            roundedBottom="lg"
+    const handleToggle = () => setShow(!show);
+    return (
+        <Box
+            maxW="xs"
+            mx="auto"
+            bg={useColorModeValue("white", "gray.800")}
+            shadow="lg"
+            rounded="lg"
         >
-            <chakra.h1 color="white" fontWeight="bold" fontSize="lg">
-                {uploadedFile.total}
-            </chakra.h1>
-            <chakra.button
-                onClick={() => onDelete(uploadedFile.id)}
-                px={2}
-                py={1}
-                bg="white"
-                fontSize="xs"
-                color="gray.900"
-                fontWeight="bold"
-                rounded="lg"
-                textTransform="uppercase"
-                _hover={{
-                    bg: "gray.200",
-                }}
-                _focus={{
-                    bg: "gray.400",
-                }}
+            <Box px={4} py={2}>
+                <chakra.h1
+                    color={useColorModeValue("gray.800", "white")}
+                    fontWeight="bold"
+                    fontSize="sm"
+                    textTransform="uppercase"
+                >{uploadedFile.timestamp}</chakra.h1>
+                <Collapse startingHeight={50} in={show}
+                          onClick={handleToggle} >
+                    {show && <Text
+                        mt={1}
+                        fontSize="sm"
+                        style={{whiteSpace: 'pre-wrap'}}
+                    >{uploadedFile.text}</Text>}
+                    {!show && <Text
+                        mt={1}
+                        fontSize="sm"
+                        noOfLines={show ? 100: 2}
+                        style={{whiteSpace: 'pre-wrap'}}
+                    >{uploadedFile.text}</Text>}
+                </Collapse>
+            </Box>
+
+
+            <Image
+                src={`/backend/${uploadedFile.savedFileName}`}
+                alt={`Picture of ${uploadedFile.originalName}`}
+                roundedTop="lg"
+                w={'100%'}
+            />
+
+            <Flex
+                alignItems="center"
+                justifyContent="space-between"
+                px={4}
+                py={2}
+                roundedBottom="lg"
             >
-                Delete
-            </chakra.button>
-        </Flex>
-    </Box>
-);
+                <Editable
+                    defaultValue={uploadedFile.total}
+                    onBlur={() => onUpdate((event.target as HTMLButtonElement)?.value, uploadedFile.savedFileName)}>
+                    <EditablePreview/>
+                    <EditableInput/>
+                </Editable>
+
+                <chakra.button
+                    onClick={() => onDelete(uploadedFile.id)}
+                    px={2}
+                    py={1}
+                    bg="white"
+                    fontSize="xs"
+                    color="gray.900"
+                    fontWeight="bold"
+                    rounded="lg"
+                    textTransform="uppercase"
+                    _hover={{
+                        bg: "gray.200",
+                    }}
+                    _focus={{
+                        bg: "gray.400",
+                    }}
+                >
+                    Delete
+                </chakra.button>
+            </Flex>
+        </Box>
+    )
+};
 
 export default UploadedFileCard;

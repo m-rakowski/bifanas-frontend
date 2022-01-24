@@ -24,12 +24,12 @@ import axios from "axios";
 export interface OcrResponseRM {
     text: string;
     total: string;
-    fileId: string;
+    savedFileName: string;
 }
 
 export default function Index() {
     const [requestInProgress, setRequestInProgress] = useState<boolean>(false);
-    const [data, setData] = useState<OcrResponseRM>({total: '', text: '', fileId: ''});
+    const [data, setData] = useState<OcrResponseRM>({total: '', text: '', savedFileName: ''});
     const [uploadedImage, setUploadedImage] = useState(null);
     const [inputValue, setInputValue] = useState("");
     const toast = useToast()
@@ -48,7 +48,7 @@ export default function Index() {
         try {
             await axios.put<OcrResponseRM>(
                 "/backend/api/image/update-total",
-                {total: inputValue, fileId: data.fileId}, {});
+                {total: inputValue, savedFileName: data.savedFileName}, {});
             toast({
                 title: `File uploaded`,
                 status: 'success',
@@ -105,7 +105,7 @@ export default function Index() {
                 />}
                 <Stack>
                     <Dropzone onFileAccepted={uploadToClient}/>
-                    {uploadedImage && data && data.fileId && <HStack>
+                    {uploadedImage && data && data.savedFileName && <HStack>
                         <Heading as='h3' size='lg'>Amount:</Heading>
                         <NumberInput
                             onChange={() => setInputValue((event.target as HTMLButtonElement)?.value)}
