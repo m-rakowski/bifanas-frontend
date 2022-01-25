@@ -80,7 +80,7 @@ const UploadedFileCard: React.FC<{
                 </Editable>
 
                 <chakra.button
-                    onClick={() => onDelete(uploadedFile.id)}
+                    onClick={() => onDelete(uploadedFile.savedFileName)}
                     px={2}
                     py={1}
                     bg="white"

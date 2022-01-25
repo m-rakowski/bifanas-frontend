@@ -30,10 +30,10 @@ export default function Uploaded() {
 
     const [uploadedList, setUploadedList] = useState<UploadedFileRM[]>([]);
 
-    const deleteUploadedFile = (id: string) => {
-        axios.delete(`/backend/api/images/${id}`)
+    const deleteUploadedFile = (savedFileName: string) => {
+        axios.delete(`/backend/api/images/${savedFileName}`)
             .then(() => {
-                setUploadedList(uploadedList.filter((uploadedFile) => uploadedFile.id !== id));
+                setUploadedList(uploadedList.filter((uploadedFile) => uploadedFile.savedFileName !== savedFileName));
             });
     };
     useEffect(() => {
