@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import {
     Box,
-    Button,
     chakra,
     Collapse,
     Editable,
@@ -9,8 +8,12 @@ import {
     EditablePreview,
     Flex,
     Image,
+    Modal,
+    ModalContent,
+    ModalOverlay,
     Text,
-    useColorModeValue
+    useColorModeValue,
+    useDisclosure
 } from "@chakra-ui/react";
 import {UploadedFileRM} from "../model/uploaded-file-r-m";
 
@@ -24,6 +27,15 @@ const UploadedFileCard: React.FC<{
           onUpdate,
       }) => {
     const [show, setShow] = useState(false);
+
+    const {isOpen, onOpen, onClose} = useDisclosure()
+    const [size, setSize] = React.useState('xl')
+
+    const handleSizeClick = (newSize) => {
+        setSize(newSize)
+        onOpen()
+    }
+
 
     const handleToggle = () => setShow(!show);
     return (
@@ -42,7 +54,7 @@ const UploadedFileCard: React.FC<{
                     textTransform="uppercase"
                 >{uploadedFile.timestamp}</chakra.h1>
                 <Collapse startingHeight={50} in={show}
-                          onClick={handleToggle} >
+                          onClick={handleToggle}>
                     {show && <Text
                         mt={1}
                         fontSize="sm"
@@ -51,7 +63,7 @@ const UploadedFileCard: React.FC<{
                     {!show && <Text
                         mt={1}
                         fontSize="sm"
-                        noOfLines={show ? 100: 2}
+                        noOfLines={show ? 100 : 2}
                         style={{whiteSpace: 'pre-wrap'}}
                     >{uploadedFile.text}</Text>}
                 </Collapse>
@@ -63,7 +75,20 @@ const UploadedFileCard: React.FC<{
                 alt={`Picture of ${uploadedFile.originalName}`}
                 roundedTop="lg"
                 w={'100%'}
+                onClick={() => handleSizeClick(size)}
+
             />
+            <Modal onClose={onClose} size={size} isOpen={isOpen}>
+                <ModalOverlay/>
+                <ModalContent>
+
+                    <Image
+                        src={`/backend/${uploadedFile.savedFileName}`}
+                        alt={`Picture of ${uploadedFile.originalName}`}
+                        w={'100%'}
+                    />
+                </ModalContent>
+            </Modal>
 
             <Flex
                 alignItems="center"
