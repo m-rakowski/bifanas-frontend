@@ -12,6 +12,7 @@ import {
     ModalContent,
     ModalOverlay,
     Text,
+    Tooltip,
     useColorModeValue,
     useDisclosure
 } from "@chakra-ui/react";
@@ -26,6 +27,18 @@ const UploadedFileCard: React.FC<{
           onDelete,
           onUpdate,
       }) => {
+
+
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleDateString(undefined, {
+            hour: "numeric",
+            minute: "numeric",
+            month: "short",
+            day: "numeric",
+            second: "numeric"
+        })
+    }
+
     const [show, setShow] = useState(false);
 
     const {isOpen, onOpen, onClose} = useDisclosure()
@@ -47,12 +60,17 @@ const UploadedFileCard: React.FC<{
             rounded="lg"
         >
             <Box px={4} py={2}>
-                <chakra.h1
-                    color={useColorModeValue("gray.800", "white")}
-                    fontWeight="bold"
-                    fontSize="sm"
-                    textTransform="uppercase"
-                >{uploadedFile.timestamp}</chakra.h1>
+
+
+                <Tooltip label={uploadedFile.timestamp} placement='top'>
+                    <chakra.h1
+                        color={useColorModeValue("gray.800", "white")}
+                        fontWeight="bold"
+                        fontSize="sm"
+                        textTransform="uppercase"
+                    >{formatDate(uploadedFile.timestamp)}</chakra.h1>
+                </Tooltip>
+
                 <Collapse startingHeight={50} in={show}
                           onClick={handleToggle}>
                     {show && <Text
