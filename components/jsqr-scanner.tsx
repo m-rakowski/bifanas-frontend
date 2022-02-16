@@ -8,7 +8,9 @@ export default function JsqrScanner({onScanned}) {
 
         const devices = await navigator.mediaDevices.enumerateDevices();
         const videoDevices = devices.filter(device => device.kind === 'videoinput');
+        alert(JSON.stringify(videoDevices, null, 2));
         const lastDevice = videoDevices[videoDevices.length - 1];
+        const firstDevice = videoDevices[0];
 
         const stream = await navigator.mediaDevices.getUserMedia({
             video: {
@@ -16,7 +18,7 @@ export default function JsqrScanner({onScanned}) {
                 height: 250,
                 // facingMode: 'environment',
                 deviceId: {
-                    exact: lastDevice.deviceId
+                    exact: firstDevice.deviceId
                 }
             }
         });
