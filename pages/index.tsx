@@ -10,10 +10,7 @@ import {
     HStack,
     Modal,
     ModalBody,
-    ModalCloseButton,
     ModalContent,
-    ModalFooter,
-    ModalHeader,
     ModalOverlay,
     NumberDecrementStepper,
     NumberIncrementStepper,
@@ -26,16 +23,19 @@ import {
     useToast,
 } from '@chakra-ui/react';
 import dynamic from "next/dynamic";
+
+const QrReader = dynamic(() => import("react-qr-reader"), {ssr: false}) as any;
+
 import Dropzone from "../components/dropzone";
 import axios from "axios";
 
-const QrReader = dynamic(() => import("react-qr-reader"), {ssr: false});
 
 export interface OcrResponseRM {
     text: string;
     total: string;
     savedFileName: string;
 }
+
 
 export default function Index() {
     const [requestInProgress, setRequestInProgress] = useState<boolean>(false);
@@ -54,7 +54,7 @@ export default function Index() {
             });
             const totalAmount = (data as string).split('*').find(segment => segment.startsWith("O:")).substring(2);
             setInputValue(totalAmount);
-            onClose();
+            // onClose();
         }
     };
 
@@ -130,29 +130,29 @@ export default function Index() {
     const {user, error, isLoading} = useUser();
 
     return (
-        <>      <Modal isOpen={isOpen} onClose={onClose}>
-            <ModalOverlay/>
-            <ModalContent>
-                <ModalHeader>Modal Title</ModalHeader>
-                <ModalCloseButton/>
-                <ModalBody>
-                    <QrReader
-                        delay={100}
-                        style={previewStyle}
-                        onError={handleError}
-                        onScan={handleScan}
-                    />
 
-                </ModalBody>
+        <>
 
-                <ModalFooter>
-                    <Button colorScheme='blue' mr={3} onClick={onClose}>
-                        Close
-                    </Button>
-                    <Button variant='ghost'>Secondary Action</Button>
-                </ModalFooter>
-            </ModalContent>
-        </Modal>
+            <QrReader
+                delay={100}
+                style={previewStyle}
+                onError={handleError}
+                onScan={handleScan}
+            />
+
+            <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay/>
+                <ModalContent>
+                    <ModalBody>
+                        <QrReader
+                            delay={100}
+                            style={previewStyle}
+                            onError={handleError}
+                            onScan={handleScan}
+                        />
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
             {user && <div>
                 {requestInProgress && <Spinner
                     thickness='4px'
