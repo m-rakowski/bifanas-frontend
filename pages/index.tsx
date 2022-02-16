@@ -1,4 +1,4 @@
-import {useState} from "react";
+import React, {useState} from "react";
 import {useUser} from '@auth0/nextjs-auth0';
 import Image from 'next/image';
 import '../styles/Index.module.scss';
@@ -54,7 +54,7 @@ export default function Index() {
             });
             const totalAmount = (data as string).split('*').find(segment => segment.startsWith("O:")).substring(2);
             setInputValue(totalAmount);
-            // onClose();
+            onClose();
         }
     };
 
@@ -132,28 +132,20 @@ export default function Index() {
     return (
 
         <>
-
-            <QrReader
-                delay={100}
-                style={previewStyle}
-                onError={handleError}
-                onScan={handleScan}
-                facingMode={'user'}
-            />
-
-            <Modal isOpen={isOpen} onClose={onClose}>
+            <Modal onClose={onClose} isOpen={isOpen} size={'xs'}>
                 <ModalOverlay/>
                 <ModalContent>
-                    <ModalBody>
-                        <QrReader
-                            delay={100}
-                            style={previewStyle}
-                            onError={handleError}
-                            onScan={handleScan}
-                        />
-                    </ModalBody>
+                    <QrReader
+                        delay={100}
+                        style={previewStyle}
+                        onError={handleError}
+                        onScan={handleScan}
+                        facingMode={'user'}
+                    />
                 </ModalContent>
             </Modal>
+
+
             {user && <div>
                 {requestInProgress && <Spinner
                     thickness='4px'

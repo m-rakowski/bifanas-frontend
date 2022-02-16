@@ -99,7 +99,6 @@ const UploadedFileCard: React.FC<{
             <Modal onClose={onClose} size={size} isOpen={isOpen}>
                 <ModalOverlay/>
                 <ModalContent>
-
                     <Image
                         src={`/backend/${uploadedFile.savedFileName}`}
                         alt={`Picture of ${uploadedFile.originalName}`}
