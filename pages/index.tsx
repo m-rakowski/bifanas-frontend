@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {useUser} from '@auth0/nextjs-auth0';
 import Image from 'next/image';
+
 import '../styles/Index.module.scss';
 import {
     Box,
@@ -9,7 +10,6 @@ import {
     Heading,
     HStack,
     Modal,
-    ModalBody,
     ModalContent,
     ModalOverlay,
     NumberDecrementStepper,
@@ -22,22 +22,14 @@ import {
     useDisclosure,
     useToast,
 } from '@chakra-ui/react';
-import dynamic from "next/dynamic";
-
-const QrReader = dynamic(() => import("react-qr-reader"), {ssr: false}) as any;
-
 import Dropzone from "../components/dropzone";
+import JsqrScanner from "../components/jsqr-scanner";
+import {OcrResponseRM} from "../model/ocr-response-rm";
 import axios from "axios";
 
 
-export interface OcrResponseRM {
-    text: string;
-    total: string;
-    savedFileName: string;
-}
-
-
 export default function Index() {
+
     const [requestInProgress, setRequestInProgress] = useState<boolean>(false);
     const [data, setData] = useState<OcrResponseRM>({total: '', text: '', savedFileName: ''});
     const [uploadedImage, setUploadedImage] = useState(null);
@@ -45,37 +37,14 @@ export default function Index() {
     const toast = useToast();
     const {isOpen, onOpen, onClose} = useDisclosure();
 
-    const handleScan = (data) => {
-        if (data) {
-            toast({
-                title: `QR read`,
-                status: 'success',
-                isClosable: true,
-            });
-            const totalAmount = (data as string).split('*').find(segment => segment.startsWith("O:")).substring(2);
-            setInputValue(totalAmount);
-            onClose();
-        }
-    };
-
-    const handleError = (err) => {
-        console.error(err)
-    }
-    const previewStyle = {
-        height: 300,
-        width: 300,
-    }
 
     const uploadToClient = async (image) => {
         if (image) {
-
             onOpen();
             setUploadedImage(URL.createObjectURL(image));
             const ocrResponseRM = await uploadFileToBackend(image);
             setData(ocrResponseRM);
             setInputValue(ocrResponseRM?.total);
-
-
         }
 
     };
@@ -127,24 +96,29 @@ export default function Index() {
         }
     };
 
+    const handleScan = (data) => {
+        if (data) {
+            toast({
+                title: `QR read`,
+                status: 'success',
+                isClosable: true,
+            });
+            const totalAmount = (data as string).split('*').find(segment => segment.startsWith("O:")).substring(2);
+            setInputValue(totalAmount);
+            onClose();
+        }
+    };
+
     const {user, error, isLoading} = useUser();
 
     return (
-
         <>
             <Modal onClose={onClose} isOpen={isOpen} size={'xs'}>
                 <ModalOverlay/>
                 <ModalContent>
-                    <QrReader
-                        delay={100}
-                        style={previewStyle}
-                        onError={handleError}
-                        onScan={handleScan}
-                        facingMode={'environment'}
-                    />
+                    <JsqrScanner onScanned={handleScan}/>
                 </ModalContent>
             </Modal>
-
 
             {user && <div>
                 {requestInProgress && <Spinner
@@ -186,19 +160,6 @@ export default function Index() {
                                                      height={800}
                             />}
                         </Box>
-                        {/*<Box mt={{base: 4, md: 0}} ml={{md: 6}}>*/}
-                        {/*    {data?.text && <Text*/}
-                        {/*        fontWeight='bold'*/}
-                        {/*        textTransform='uppercase'*/}
-                        {/*        fontSize='sm'*/}
-                        {/*        letterSpacing='wide'*/}
-                        {/*        color='teal.600'*/}
-                        {/*    >Parsed text</Text>}*/}
-
-                        {/*    <Text mt={2} color='gray.500' style={{whiteSpace: 'pre-wrap'}}>*/}
-                        {/*        {data?.text}*/}
-                        {/*    </Text>*/}
-                        {/*</Box>*/}
                     </Box>
                 </Center>
 

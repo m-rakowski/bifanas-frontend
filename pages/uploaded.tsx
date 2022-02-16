@@ -1,10 +1,10 @@
 import {useEffect, useState} from "react";
 import '../styles/Uploaded.module.scss'
-import {UploadedFileRM} from "../model/uploaded-file-r-m";
 import axios from "axios";
 import {Box, SimpleGrid, useToast} from "@chakra-ui/react";
 import UploadedFileCard from "../components/uploaded_file_card";
-import {OcrResponseRM} from "./index";
+import {UploadedFileRM} from "../model/uploaded-file-r-m";
+import {OcrResponseRM} from "../model/ocr-response-rm";
 
 export default function Uploaded() {
     const toast = useToast()
