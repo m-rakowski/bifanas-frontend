@@ -140,7 +140,7 @@ export default function Index() {
                         style={previewStyle}
                         onError={handleError}
                         onScan={handleScan}
-                        facingMode={'user'}
+                        facingMode={'environment'}
                     />
                 </ModalContent>
             </Modal>
