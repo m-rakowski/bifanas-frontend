@@ -138,6 +138,7 @@ export default function Index() {
                 style={previewStyle}
                 onError={handleError}
                 onScan={handleScan}
+                facingMode={'user'}
             />
 
             <Modal isOpen={isOpen} onClose={onClose}>
