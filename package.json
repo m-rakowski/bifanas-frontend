@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "react-qr-reader": "github:JodusNodus/react-qr-reader#master",
     "@auth0/nextjs-auth0": "^1.6.1",
     "@chakra-ui/icons": "^1.1.1",
     "@chakra-ui/react": "^1.7.3",

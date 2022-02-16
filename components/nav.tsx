@@ -19,25 +19,7 @@ import NextLink from 'next/link';
 import {CloseIcon, HamburgerIcon} from '@chakra-ui/icons';
 import {useUser} from "@auth0/nextjs-auth0";
 import {useRouter} from 'next/router'
-
-interface Route {
-    label: string,
-    path: string,
-    publicRoute: boolean
-}
-
-const routes: Route [] = [
-    {
-        label: 'Home',
-        path: '/',
-        publicRoute: true
-    },
-    {
-        label: 'Uploaded',
-        path: '/uploaded',
-        publicRoute: false
-    },
-];
+import {Route, routes} from "../routes/routes";
 
 const NavLink: React.FC<{
     link: Route
@@ -114,7 +96,7 @@ export default function Nav() {
                     <Box pb={4} display={{md: 'none'}}>
                         <Stack as={'nav'} spacing={4}>
                             {routes.map((link) => (
-                                <NavLink key={link.label} link={link}></NavLink>
+                                <NavLink key={link.label} link={link}/>
                             ))}
                         </Stack>
                     </Box>

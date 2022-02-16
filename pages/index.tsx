@@ -1,13 +1,20 @@
 import {useState} from "react";
 import {useUser} from '@auth0/nextjs-auth0';
 import Image from 'next/image';
-import '../styles/Index.module.scss'
+import '../styles/Index.module.scss';
 import {
     Box,
     Button,
     Center,
     Heading,
     HStack,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
     NumberDecrementStepper,
     NumberIncrementStepper,
     NumberInput,
@@ -15,11 +22,14 @@ import {
     NumberInputStepper,
     Spinner,
     Stack,
-    Text,
-    useToast
-} from "@chakra-ui/react";
+    useDisclosure,
+    useToast,
+} from '@chakra-ui/react';
+import dynamic from "next/dynamic";
 import Dropzone from "../components/dropzone";
 import axios from "axios";
+
+const QrReader = dynamic(() => import("react-qr-reader"), {ssr: false});
 
 export interface OcrResponseRM {
     text: string;
@@ -32,16 +42,42 @@ export default function Index() {
     const [data, setData] = useState<OcrResponseRM>({total: '', text: '', savedFileName: ''});
     const [uploadedImage, setUploadedImage] = useState(null);
     const [inputValue, setInputValue] = useState("");
-    const toast = useToast()
+    const toast = useToast();
+    const {isOpen, onOpen, onClose} = useDisclosure();
+
+    const handleScan = (data) => {
+        if (data) {
+            toast({
+                title: `QR read`,
+                status: 'success',
+                isClosable: true,
+            });
+            const totalAmount = (data as string).split('*').find(segment => segment.startsWith("O:")).substring(2);
+            setInputValue(totalAmount);
+            onClose();
+        }
+    };
+
+    const handleError = (err) => {
+        console.error(err)
+    }
+    const previewStyle = {
+        height: 300,
+        width: 300,
+    }
 
     const uploadToClient = async (image) => {
         if (image) {
+
+            onOpen();
             setUploadedImage(URL.createObjectURL(image));
+            const ocrResponseRM = await uploadFileToBackend(image);
+            setData(ocrResponseRM);
+            setInputValue(ocrResponseRM?.total);
+
+
         }
 
-        const ocrResponseRM = await uploadFileToBackend(image);
-        setData(ocrResponseRM);
-        setInputValue(ocrResponseRM?.total);
     };
 
     const updateTotal = async () => {
@@ -94,7 +130,29 @@ export default function Index() {
     const {user, error, isLoading} = useUser();
 
     return (
-        <>
+        <>      <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay/>
+            <ModalContent>
+                <ModalHeader>Modal Title</ModalHeader>
+                <ModalCloseButton/>
+                <ModalBody>
+                    <QrReader
+                        delay={100}
+                        style={previewStyle}
+                        onError={handleError}
+                        onScan={handleScan}
+                    />
+
+                </ModalBody>
+
+                <ModalFooter>
+                    <Button colorScheme='blue' mr={3} onClick={onClose}>
+                        Close
+                    </Button>
+                    <Button variant='ghost'>Secondary Action</Button>
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
             {user && <div>
                 {requestInProgress && <Spinner
                     thickness='4px'
@@ -106,6 +164,7 @@ export default function Index() {
                 <Stack>
                     <Dropzone onFileAccepted={uploadToClient}/>
                     {uploadedImage && data && data.savedFileName && <HStack>
+
                         <Heading as='h3' size='lg'>Amount:</Heading>
                         <NumberInput
                             onChange={() => setInputValue((event.target as HTMLButtonElement)?.value)}
@@ -134,19 +193,19 @@ export default function Index() {
                                                      height={800}
                             />}
                         </Box>
-                        <Box mt={{base: 4, md: 0}} ml={{md: 6}}>
-                            {data?.text && <Text
-                                fontWeight='bold'
-                                textTransform='uppercase'
-                                fontSize='sm'
-                                letterSpacing='wide'
-                                color='teal.600'
-                            >Parsed text</Text>}
+                        {/*<Box mt={{base: 4, md: 0}} ml={{md: 6}}>*/}
+                        {/*    {data?.text && <Text*/}
+                        {/*        fontWeight='bold'*/}
+                        {/*        textTransform='uppercase'*/}
+                        {/*        fontSize='sm'*/}
+                        {/*        letterSpacing='wide'*/}
+                        {/*        color='teal.600'*/}
+                        {/*    >Parsed text</Text>}*/}
 
-                            <Text mt={2} color='gray.500' style={{whiteSpace: 'pre-wrap'}}>
-                                {data?.text}
-                            </Text>
-                        </Box>
+                        {/*    <Text mt={2} color='gray.500' style={{whiteSpace: 'pre-wrap'}}>*/}
+                        {/*        {data?.text}*/}
+                        {/*    </Text>*/}
+                        {/*</Box>*/}
                     </Box>
                 </Center>
 
