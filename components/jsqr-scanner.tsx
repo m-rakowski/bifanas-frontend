@@ -6,7 +6,11 @@ export default function JsqrScanner({onScanned}) {
     const videoRef = useRef<HTMLVideoElement>(null)
     const getVideo = useCallback(async () => {
         const stream = await navigator.mediaDevices.getUserMedia({
-            video: {width: 250, height: 250}
+            video: {
+                width: 250,
+                height: 250,
+                facingMode: 'environment'
+            }
         });
         const video = videoRef.current;
         video.srcObject = stream;
