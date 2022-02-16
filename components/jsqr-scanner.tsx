@@ -5,11 +5,19 @@ export default function JsqrScanner({onScanned}) {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const videoRef = useRef<HTMLVideoElement>(null)
     const getVideo = useCallback(async () => {
+
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(device => device.kind === 'videoinput');
+        const lastDevice = videoDevices[videoDevices.length - 1];
+
         const stream = await navigator.mediaDevices.getUserMedia({
             video: {
                 width: 250,
                 height: 250,
-                facingMode: 'environment'
+                // facingMode: 'environment',
+                deviceId: {
+                    exact: lastDevice.deviceId
+                }
             }
         });
         const video = videoRef.current;
