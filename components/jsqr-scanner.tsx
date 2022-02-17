@@ -1,40 +1,19 @@
-import React, {useCallback, useEffect, useRef} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import jsQR from "jsqr";
 
-export default function JsqrScanner({onScanned}) {
+export interface JsqrScannerProps {
+    onScanned: (data: string) => void
+}
+
+export const JsqrScanner: React.FC<JsqrScannerProps> = ({onScanned}) => {
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
-
-    const getVideo = useCallback(async () => {
-
-        // ask for permissions
-        await navigator.mediaDevices.getUserMedia({video: true});
-
-
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const videoDevices = devices.filter(device => device.kind === 'videoinput');
-        alert(JSON.stringify(videoDevices, null, 2));
-        const lastDevice = videoDevices[videoDevices.length - 1];
-        const firstDevice = videoDevices[0];
-
-        const stream = await navigator.mediaDevices.getUserMedia({
-            video: {
-                width: 250,
-                height: 250,
-                // facingMode: 'environment',
-                deviceId: {
-                    exact: lastDevice.deviceId
-                }
-            }
-        });
-        const video = videoRef.current;
-        video.srcObject = stream;
-        video.play();
-
-    }, [videoRef]);
+    const [mediaStream, setMediaStream] = useState(null);
 
     const takePhoto = useCallback(() => {
+        console.log('takePhoto');
+
         const width = 250;
         const height = 250;
 
@@ -54,19 +33,58 @@ export default function JsqrScanner({onScanned}) {
         }
     }, [videoRef, canvasRef]);
 
-    useEffect(() => {
-        getVideo();
 
-        const interval = setInterval(() => {
+    useEffect(() => {
+        console.log('useEffect');
+
+        async function enableStream() {
+            console.log('enableStream')
+            try {
+                // start and stop camera to ask for permissions so that enumerateDevices() shows rear camera
+                (await navigator.mediaDevices.getUserMedia({video: true})).getVideoTracks().forEach(track => track.stop());
+
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                const lastDevice = videoDevices[videoDevices.length - 1];
+
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: 250,
+                        height: 250,
+                        deviceId: {
+                            exact: lastDevice.deviceId
+                        }
+                    }
+                });
+                setMediaStream(stream);
+
+                const video = videoRef.current;
+                video.srcObject = stream;
+                video.play();
+            } catch (err) {
+                console.log(err);
+            }
+        }
+
+        let interval = setInterval(() => {
             takePhoto();
         }, 2000);
-        return function () {
+
+        if (!mediaStream) {
+            enableStream();
+        }
+        return function cleanup() {
+            console.log('cleanup')
+            mediaStream?.getTracks().forEach(track => {
+                track.stop();
+            });
             clearInterval(interval);
-        };
-    }, [getVideo, takePhoto])
+        }
+    }, [mediaStream]);
+
 
     return (<>
         <canvas ref={canvasRef} hidden={true}/>
         <video ref={videoRef} autoPlay playsInline controls={false}/>
     </>);
-}
+};

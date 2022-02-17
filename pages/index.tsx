@@ -23,7 +23,7 @@ import {
     useToast,
 } from '@chakra-ui/react';
 import Dropzone from "../components/dropzone";
-import JsqrScanner from "../components/jsqr-scanner";
+import {JsqrScanner} from "../components/jsqr-scanner";
 import {OcrResponseRM} from "../model/ocr-response-rm";
 import axios from "axios";
 
@@ -96,14 +96,14 @@ export default function Index() {
         }
     };
 
-    const handleScan = (data) => {
+    const handleScan = (data: string) => {
         if (data) {
             toast({
                 title: `QR read`,
                 status: 'success',
                 isClosable: true,
             });
-            const totalAmount = (data as string).split('*').find(segment => segment.startsWith("O:")).substring(2);
+            const totalAmount = data.split('*').find(segment => segment.startsWith("O:"))?.substring(2);
             setInputValue(totalAmount);
             onClose();
         }
