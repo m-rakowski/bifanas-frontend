@@ -40,10 +40,14 @@ export const JsqrScanner: React.FC<JsqrScannerProps> = ({onScanned}) => {
         async function enableStream() {
             console.log('enableStream')
             try {
-                // start and stop camera to ask for permissions so that enumerateDevices() shows rear camera
-                (await navigator.mediaDevices.getUserMedia({video: true})).getVideoTracks().forEach(track => track.stop());
 
-                const devices = await navigator.mediaDevices.enumerateDevices();
+                let devices = await navigator.mediaDevices.enumerateDevices();
+                if (devices.length === 0 || devices[0].deviceId === "") {
+                    // start and stop camera to ask for permissions so that enumerateDevices() shows rear camera
+                    (await navigator.mediaDevices.getUserMedia({video: true})).getVideoTracks().forEach(track => track.stop());
+                    devices = await navigator.mediaDevices.enumerateDevices();
+                }
+
                 const videoDevices = devices.filter(device => device.kind === 'videoinput');
                 const lastDevice = videoDevices[videoDevices.length - 1];
 
@@ -68,7 +72,7 @@ export const JsqrScanner: React.FC<JsqrScannerProps> = ({onScanned}) => {
 
         let interval = setInterval(() => {
             takePhoto();
-        }, 2000);
+        }, 500);
 
         if (!mediaStream) {
             enableStream();
@@ -80,7 +84,7 @@ export const JsqrScanner: React.FC<JsqrScannerProps> = ({onScanned}) => {
             });
             clearInterval(interval);
         }
-    }, [mediaStream]);
+    }, [mediaStream, takePhoto]);
 
 
     return (<>
