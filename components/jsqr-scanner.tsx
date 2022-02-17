@@ -2,9 +2,15 @@ import React, {useCallback, useEffect, useRef} from "react";
 import jsQR from "jsqr";
 
 export default function JsqrScanner({onScanned}) {
-    const canvasRef = useRef<HTMLCanvasElement>(null)
-    const videoRef = useRef<HTMLVideoElement>(null)
+
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
+
     const getVideo = useCallback(async () => {
+
+        // ask for permissions
+        await navigator.mediaDevices.getUserMedia({video: true});
+
 
         const devices = await navigator.mediaDevices.enumerateDevices();
         const videoDevices = devices.filter(device => device.kind === 'videoinput');
@@ -18,7 +24,7 @@ export default function JsqrScanner({onScanned}) {
                 height: 250,
                 // facingMode: 'environment',
                 deviceId: {
-                    exact: firstDevice.deviceId
+                    exact: lastDevice.deviceId
                 }
             }
         });
