@@ -1,13 +1,4 @@
 {
-  "name": "nextjs",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start -p $PORT",
-    "lint": "next lint"
-  },
   "dependencies": {
     "@auth0/nextjs-auth0": "^1.6.1",
     "@chakra-ui/icons": "^1.1.1",
@@ -34,5 +25,14 @@
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.0",
     "typescript": "^4.5.4"
-  }
+  },
+  "name": "nextjs",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "lint": "next lint",
+    "start": "next start -p $PORT"
+  },
+  "version": "1.0.0"
 }
