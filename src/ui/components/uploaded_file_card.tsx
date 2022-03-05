@@ -16,7 +16,7 @@ import {
     useColorModeValue,
     useDisclosure
 } from "@chakra-ui/react";
-import {UploadedFileRM} from "../model/uploaded-file-r-m";
+import {UploadedFileRM} from "../../model/uploaded-file-r-m";
 
 const UploadedFileCard: React.FC<{
     uploadedFile: UploadedFileRM;

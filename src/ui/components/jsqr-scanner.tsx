@@ -31,14 +31,11 @@ export const JsqrScanner: React.FC<JsqrScannerProps> = ({onScanned}) => {
         if (code) {
             onScanned(code.data);
         }
-    }, [videoRef, canvasRef]);
+    }, [videoRef, canvasRef, onScanned]);
 
 
     useEffect(() => {
-        console.log('useEffect');
-
         async function enableStream() {
-            console.log('enableStream')
             try {
 
                 let devices = await navigator.mediaDevices.enumerateDevices();
@@ -78,7 +75,6 @@ export const JsqrScanner: React.FC<JsqrScannerProps> = ({onScanned}) => {
             enableStream();
         }
         return function cleanup() {
-            console.log('cleanup')
             mediaStream?.getTracks().forEach(track => {
                 track.stop();
             });

@@ -19,7 +19,7 @@ import NextLink from 'next/link';
 import {CloseIcon, HamburgerIcon} from '@chakra-ui/icons';
 import {useUser} from "@auth0/nextjs-auth0";
 import {useRouter} from 'next/router'
-import {Route, routes} from "../routes/routes";
+import {Route, routes} from "../../routes/routes";
 
 const NavLink: React.FC<{
     link: Route
