@@ -1,16 +1,16 @@
 import {configureStore} from '@reduxjs/toolkit';
+import {uploadedFilesSlice, UploadedFilesSliceState} from "./slices/uploadedFilesSlice/uploadedFilesSlice";
+import {indexPageSlice, IndexPageSliceState} from "./slices/indexPageSlice/indexPageSlice";
 
-import uploadedFilesReducer, {UploadedFilesSliceState} from './slices/uploadedFilesSlice';
-import indexPageReducer, {IndexPageSliceState} from "./slices/indexPageSlice";
 
 export default configureStore({
     reducer: {
-        uploadedFiles: uploadedFilesReducer,
-        indexPage: indexPageReducer,
+        uploadedFiles: uploadedFilesSlice.reducer,
+        indexPage: indexPageSlice.reducer,
     },
 });
 
 export interface AppState {
-  uploadedFiles: UploadedFilesSliceState,
-  indexPage: IndexPageSliceState,
+    uploadedFiles: UploadedFilesSliceState,
+    indexPage: IndexPageSliceState,
 }

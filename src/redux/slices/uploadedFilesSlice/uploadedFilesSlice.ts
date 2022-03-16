@@ -1,9 +1,9 @@
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit';
 import axios from "axios";
-import {UploadedFileRM} from "../../model/uploaded-file-r-m";
-import {OcrResponseRM} from "../../model/ocr-response-rm";
+import {UploadedFileRM} from "../../../model/uploaded-file-r-m";
+import {OcrResponseRM} from "../../../model/ocr-response-rm";
 import {Dispatch} from "redux";
-import {AppState} from "../store";
+import {AppState} from "../../store";
 
 
 export interface UploadedFilesSliceState {
@@ -125,5 +125,3 @@ export const updateTotal = (newTotal: string, savedFileName: string): UploadedFi
 //         }
 //     }
 // }
-
-export default uploadedFilesSlice.reducer;

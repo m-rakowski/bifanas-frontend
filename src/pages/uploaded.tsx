@@ -4,7 +4,7 @@ import {Box, SimpleGrid} from "@chakra-ui/react";
 import UploadedFileCard from "../ui/components/uploaded_file_card";
 import {UploadedFileRM} from "../model/uploaded-file-r-m";
 import {useDispatch, useSelector} from "react-redux";
-import {deleteFile, downloadUploadedFiles, getUploadedFiles, updateTotal,} from "../redux/slices/uploadedFilesSlice";
+import {deleteFile, downloadUploadedFiles, getUploadedFiles, updateTotal,} from "../redux/slices/uploadedFilesSlice/uploadedFilesSlice";
 
 export default function Uploaded() {
 

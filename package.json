@@ -23,9 +23,16 @@
     "tesseract.js": "^2.1.5"
   },
   "devDependencies": {
+    "@testing-library/dom": "^8.11.3",
+    "@testing-library/jest-dom": "^5.16.2",
+    "@testing-library/react": "^12.1.4",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.4.1",
     "@types/react": "^17.0.37",
+    "babel-jest": "^27.5.1",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.0",
+    "jest": "^27.5.1",
     "typescript": "^4.5.4"
   },
   "name": "nextjs",
@@ -34,7 +41,9 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start -p $PORT"
+    "start": "next start -p $PORT",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "version": "1.0.0"
 }

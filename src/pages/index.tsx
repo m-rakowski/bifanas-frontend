@@ -25,16 +25,14 @@ import {
 import Dropzone from "../ui/components/dropzone";
 import {JsqrScanner} from "../ui/components/jsqr-scanner";
 import {useDispatch, useSelector} from "react-redux";
+import { indexPageSlice } from "../redux/slices/indexPageSlice/indexPageSlice";
+import {updateTotal, uploadFileToBackend} from "../redux/slices/indexPageSlice/effects/effects";
 import {
     getErrorMessage,
     getImageSrc,
-    getInputValue,
-    getIsFetching,
-    getOcrResponse,
-    indexPageSlice,
-    updateTotal,
-    uploadFileToBackend
-} from "../redux/slices/indexPageSlice";
+    getInputValue, getIsFetching,
+    getOcrResponse
+} from "../redux/slices/indexPageSlice/selectors/selectors";
 
 
 export default function Index() {
@@ -50,7 +48,6 @@ export default function Index() {
     const toast = useToast();
 
     useEffect(() => {
-        console.log('OI! useEffect', ocrResponse, errorMessage)
         if (ocrResponse) {
             toast({
                 title: `Picture uploaded`,
