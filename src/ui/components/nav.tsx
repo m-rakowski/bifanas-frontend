@@ -32,7 +32,7 @@ const NavLink: React.FC<{
               textDecoration: 'none',
               bg: useColorModeValue('gray.200', 'gray.700'),
           }}>
-        <a>{link.label}</a>
+         {link.label}
     </Link>
 );
 
